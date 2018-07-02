@@ -5,9 +5,7 @@ def grader():
         if grade == 'grade':
             break
         elif grade.isdigit():
-            grades.append(grade)
-        else:
-            print("please input a number or 'grade'")
+            grades.append(int(grade))
 
     average = sum(grades) / len(grades)
     if average >= 90:
