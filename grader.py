@@ -1,27 +1,27 @@
 def grader():
     grades = []
     while True:
-        grade = int(input('Grade:'))
-        if grade >= 0:
+        grade = input('Grade:')
+        if grade == 'grade':
+            break
+        elif grade.isdigit():
             grades.append(grade)
-        elif grade == 'grade':
-            return grades
         else:
             print("please input a number or 'grade'")
 
     average = sum(grades) / len(grades)
-    if average >= 90 and <= 100:
+    if average >= 90:
         letter_grade = 'A'
-    elif average >= 80 and <= 89:
+    elif average >= 80:
         letter_grade = 'B'
-    elif average >= 70 and <= 79:
+    elif average >= 70:
         letter_grade = 'C'
-    elif average >= 65 and <= 69:
+    elif average >= 65:
         letter_grade = 'D'
     else:
         letter_grade = 'F'
-    
-    print('You averaged',average,'and recieved a', letter_grade'.')
+
+    print('You averaged', average, 'and recieved a', letter_grade, '.')
 
 
 def main():
