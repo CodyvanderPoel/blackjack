@@ -19,7 +19,7 @@ def grader():
     else:
         letter_grade = 'F'
 
-    print('You averaged', average, 'and recieved a', letter_grade, '.')
+    print('You averaged', average, 'and received a', letter_grade, '.')
 
 
 def main():
