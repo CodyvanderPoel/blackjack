@@ -7,6 +7,12 @@ def deaf_grandma():
         if response == 'BYE':
             print('Grandma: BYE SONNY')
             break
+        elif response == 'HOW OLD ARE YOU GRANDMA?':
+            print('Grandma:OLDER THAN A BOX OF ROCKS!')
+        elif response == 'HEY':
+            print('Grandma: WHAT DID YOU SAY?')
+        elif response == 'I SAID HEY':
+            print('Grandma: HELLO SONNY!')
         elif response.isupper():
             print('Grandma:NO, NOT SINCE', randint(1930, 1950), '!')
         else:
