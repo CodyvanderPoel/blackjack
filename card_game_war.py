@@ -1,5 +1,37 @@
 from random import shuffle
 
+#
+#def i_declare_war(top, bottom):
+#    top_card1 = top.pop()
+#    top_card2 = top.pop()
+#    top_card3 = top.pop()
+#    top_card4 = top.pop()
+#    bottom_card1 = bottom.pop()
+#    bottom_card2 = bottom.pop()
+#    bottom_card3 = bottom.pop()
+#    bottom_card4 = bottom.pop()
+#    if top_card4 > bottom_card4:
+#        top_won.extend(cards)
+#        cards = []
+#    elif top_card4 > bottom_card4:
+#        bottom_won.extend(cards)
+#        cards = []
+#    else:
+#        top_card1 = top.pop()
+#        top_card2 = top.pop()
+#        top_card3 = top.pop()
+#        top_card4 = top.pop()
+#        bottom_card1 = bottom.pop()
+#        bottom_card2 = bottom.pop()
+#        bottom_card3 = bottom.pop()
+#        bottom_card4 = bottom.pop()
+#    if top_card4 > bottom_card4:
+#        top_won.extend(cards)
+#        cards = []
+#    elif top_card4 > bottom_card4:
+#        bottom_won.extend(cards)
+#        cards = []
+
 
 def war():
     A = 14
@@ -28,27 +60,45 @@ def war():
         card1 = top.pop()
         card2 = bottom.pop()
         cards.extend([card1, card2])
+        print(count, end=" ")
         if card1 > card2:
-            top.extend(cards[:])
+            top_won.extend(cards[:])
             cards = []
-            # print('Team1:', len(top), 'cards')
+            print('You win:', len(top) + len(top_won), 'cards left')
         elif card1 < card2:
-            bottom.extend(cards[:])
+            bottom_won.extend(cards[:])
             cards = []
+            print('You lose:', len(top) + len(top_won), 'cards left')
             # print('Team2:', len(bottom), 'cards')
-        # else:
-        # print("DRAW")
+        else:
+            phrase = ['\nI', 'Declare', 'War!']
+            for i in range(3):
+                print(phrase[i], len(top) + len(top_won), 'cards left')
+                if len(top) == 0:
+                    shuffle(top_won)
+                    top = top_won.copy()
+                    top_won.clear()
+                if len(bottom) == 0:
+                    shuffle(bottom_won)
+                    bottom = bottom_won.copy()
+                    bottom_won.clear()
+
+                if len(top) > 0 and len(bottom) > 0:
+                    cards.append(top.pop())
+                    cards.append(bottom.pop())
+                else:
+                    break
 
         if len(top) == 0:
             shuffle(top_won)
-            top.extend(top_won[:])
+            top = top_won.copy()
             top_won = []
         if len(bottom) == 0:
             shuffle(bottom_won)
-            bottom.extend(bottom_won[:])
+            bottom = bottom_won.copy()
             bottom_won = []
 
-        if count % 5000 == 0:
+        if count % 1000 == 0:
             top.extend(top_won[:])
             top_won = []
             bottom.extend(bottom_won[:])
@@ -68,7 +118,7 @@ def war():
 
 def main():
     games = {'Player 1': [], 'Player 2': []}
-    for i in range(100000):
+    for i in range(5):
         key, count = war()
         games[key].append(count)
         print(i)
