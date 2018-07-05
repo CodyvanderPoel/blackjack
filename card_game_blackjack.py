@@ -44,7 +44,7 @@ def blackjack():
     response = ask_to_play_blackjack()
     if response == 'Yes':
         player_hand = cards[:2]
-        print(player_hand)
+        print('Player\'s Hand:', player_hand)
         if A in player_hand:
             A = input('11 or 1?')
             if A == '11':
@@ -53,6 +53,56 @@ def blackjack():
                 A = 1
             else:
                 print('Please choose 11 or one.')
+        dealer_hand = cards[2:4]
+        print(dealer_hand)
+        if A in dealer_hand:
+            A = 11
+        draw = input('Wanna take a hit?')
+        if draw == 'Hit me':
+            player_hand.append(cards.pop())
+            if A in player_hand:
+                A = input('11 or 1?')
+                if A == '11':
+                    A = 11
+                elif A == '1':
+                    A = 1
+                else:
+                    print('Please choose 11 or 1.')
+            print(player_hand)
+        else:
+            print('Standing it is.')
+        draw = input('Wanna take a hit?')
+        if draw == 'Hit me':
+            player_hand.append(cards.pop())
+            if A in player_hand:
+                A = input('11 or 1?')
+                if A == '11':
+                    A = 11
+                elif A == '1':
+                    A = 1
+                else:
+                    print('Please choose 11 or 1.')
+            print(player_hand)
+        elif draw == 'Stay':
+            print('Standing it is.')
+        else:
+            print()
+
+        if sum(dealer_hand) < 17:
+            dealer_hand.append(cards.pop())
+            if A in dealer_hand:
+                A = 11
+
+        if sum(player_hand) > 21:
+            print('BUST! YOU LOSE!')
+            print(player_hand, sum(player_hand))
+
+        if sum(dealer_hand) > 21:
+            print('DEALER BUST! YOU WIN!')
+            print(dealer_hand, sum(dealer_hand))
+        if sum(player_hand) <= 21 and sum(dealer_hand) < sum(player_hand):
+            print('YOU WIN!!!')
+            print(player_hand, sum(player_hand))
 
 
 def main():
