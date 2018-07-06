@@ -1,4 +1,4 @@
-from random import shuffle
+from random import shuffle, randint
 
 
 def print_instructions():
@@ -48,14 +48,13 @@ def ask_to_play_blackjack():
 
 
 def make_deck():
-    A = 11
     K = 10
     Q = 10
     J = 10
     return [
-        A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2, A, K, Q, J, 10, 9, 8, 7, 6, 5,
-        4, 3, 2, A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2, A, K, Q, J, 10, 9, 8,
-        7, 6, 5, 4, 3, 2
+        'Ace', K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2, 'Ace', K, Q, J, 10, 9, 8,
+        7, 6, 5, 4, 3, 2, 'Ace', K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2, 'Ace', K,
+        Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2
     ]
 
 
@@ -68,20 +67,27 @@ def make_shoe():
 
 
 def hand_value(hand):
-    #A = '11 or 1'
-    #aces = []
-    #for card in hand:
-    #    if card == A:
-    #        hand.remove(A)
-    #        aces.append(A)
-    #    if sum(hand) > 10:
-    #        A = 1
-    #        hand.append(A)
-    #    elif sum(hand) < 11:
-    #        A = 11
-    #        hand.append(A)
+    '''List(cards) -> int
+    
+    >>> hand_value([4, 'Ace'])
+    15
+    '''
+    hand_total = 0
+    aces = 0
+    for card in hand:
+        if card == 'Ace':
+            aces += 1
+        else:
+            hand_total = hand_total + card
 
-    return sum(hand)
+    if aces == 0:
+        return hand_total
+    else:
+        gap = 11 + (aces - 1)
+        if hand_total + gap <= 21:
+            return hand_total + gap
+        else:
+            return hand_total + aces
 
 
 def players_turn(player_hand, shoe):
@@ -91,8 +97,17 @@ def players_turn(player_hand, shoe):
         draw = input('Wanna take a hit?').capitalize()
         if draw == 'Hit me':
             player_hand.append(shoe.pop())
-            hand_value(player_hand)
-            print(player_hand)
+            total = hand_value(player_hand)
+            if total > 21:
+                print('BUST!!')
+                break
+            elif total == 21:
+                print('BLACKJACK!!!')
+                breakshoe = make_shoe()
+            continue
+
+            print('Player\'s Hand:', player_hand)
+
         elif draw == 'Stay':
             break
         else:
@@ -103,43 +118,64 @@ def players_turn(player_hand, shoe):
 def dealers_turn(dealer_hand, shoe):
     while True:
         print('Dealer\'s Turn')
-        if sum(dealer_hand) < 17:
+        if hand_value(dealer_hand) < 17:
             dealer_hand.append(shoe.pop())
+            print('Dealer\'s hand:', dealer_hand[0], '?', dealer_hand[1:],
+                  hand_value(dealer_hand))
+
         else:
             break
 
 
 def winning_conditions(player_hand, dealer_hand):
-    if sum(player_hand) == 21:
-        print('BLACKJACK!!!')
-    if sum(player_hand) > 21:
-        print('BUST! YOU LOSE!')
-        print('DEALER WINS!')
-        print(player_hand, sum(player_hand))
-    if sum(dealer_hand) > 21:
-        print('DEALER BUST! YOU WIN!')
-        print(dealer_hand, sum(dealer_hand))
-    if sum(player_hand) <= 21 and sum(dealer_hand) < sum(player_hand):
-        print('YOU WIN!!!')
-        print(player_hand, sum(player_hand))
-    if sum(dealer_hand) > sum(player_hand) and sum(dealer_hand) <= 21:
-        print('DEALER WINS!')
+    while True:
+        if hand_value(player_hand) == 21:
+            print('BLACKJACK!!!')
+        if hand_value(player_hand) > 21:
+            print('BUST! YOU LOSE!')
+            print('DEALER WINS!')
+            break
+            print(player_hand, hand_value(player_hand))
+        if hand_value(dealer_hand) > 21:
+            print('DEALER BUST! YOU WIN!')
+            print(dealer_hand, hand_value(dealer_hand))
+        if hand_value(player_hand) <= 21 and hand_value(
+                dealer_hand) < hand_value(player_hand):
+            print('YOU WIN!!!')
+            print(player_hand, hand_value(player_hand))
+        if hand_value(dealer_hand) > hand_value(player_hand) and hand_value(
+                dealer_hand) <= 21:
+            print('DEALER WINS!')
+
+
+def betting(betting_money):
+    while True:
+        bet = input('How much are you willing to risk?')
+        if bet.isdigit():
+            if betting_money - int(bet) >= 0:
+                return int(bet)
+            else:
+                print('Not Enough Chips!')
+        else:
+            print('INVALID CHOICE!!')
 
 
 def blackjack():
-    shoe = make_shoe()
+    betting_money = round(randint(100, 1500), -2)
     while True:
+
         response = ask_to_play_blackjack()
         if response == 'No':
             break
         if response == 'Yes':
+            print('You have this much to gamble with:', betting_money)
+            betting(betting_money)
+            shoe = make_shoe()
             player_hand = shoe[:2]
             print('Player\'s Hand:', player_hand)
             hand_value(player_hand)
             dealer_hand = shoe[2:4]
-            print('Dealer\'s Hand:', dealer_hand)
-            #if A in dealer_hand:
-            #    A = 11
+            print('Dealer\'s Hand:', dealer_hand[0], '?')
             players_turn(player_hand, shoe)
             dealers_turn(dealer_hand, shoe)
             winning_conditions(player_hand, dealer_hand)
