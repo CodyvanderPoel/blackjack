@@ -33,18 +33,23 @@ def ask_to_play_blackjack():
         response = input('Are you game for a hand of Black Jack?').capitalize()
         if response == 'Yes':
             print('Welcome to the Table!')
-            choice = input('Would you like the instructions?').capitalize()
-            if choice == 'Yes':
-                print_instructions()
-            elif choice == 'No':
-                print('Big shot, eh?')
-            return 'Yes'
+            return response
         elif response == 'No':
             print('Have a good day sir and you are welcome back any time!')
-            return 'No'
-
+            exit()
         else:
             print('It is a yes or no question. Ya know that right?')
+
+
+def ask_for_instructions():
+    while True:
+        choice = input('Would you like the instructions?').capitalize().strip()
+        if choice == 'Yes':
+            print_instructions()
+            break
+        elif choice == 'No':
+            print('Big shot, eh?')
+            break
 
 
 def make_deck():
@@ -98,12 +103,13 @@ def players_turn(player_hand, shoe):
         if draw == 'Hit me':
             player_hand.append(shoe.pop())
             total = hand_value(player_hand)
+            print(player_hand)
             if total > 21:
                 print('BUST!!')
                 break
             elif total == 21:
                 print('BLACKJACK!!!')
-                breakshoe = make_shoe()
+                break
             continue
 
             print('Player\'s Hand:', player_hand)
@@ -128,24 +134,22 @@ def dealers_turn(dealer_hand, shoe):
 
 
 def winning_conditions(player_hand, dealer_hand):
-    while True:
-        if hand_value(player_hand) == 21:
-            print('BLACKJACK!!!')
-        if hand_value(player_hand) > 21:
-            print('BUST! YOU LOSE!')
-            print('DEALER WINS!')
-            break
-            print(player_hand, hand_value(player_hand))
-        if hand_value(dealer_hand) > 21:
-            print('DEALER BUST! YOU WIN!')
-            print(dealer_hand, hand_value(dealer_hand))
-        if hand_value(player_hand) <= 21 and hand_value(
-                dealer_hand) < hand_value(player_hand):
-            print('YOU WIN!!!')
-            print(player_hand, hand_value(player_hand))
-        if hand_value(dealer_hand) > hand_value(player_hand) and hand_value(
-                dealer_hand) <= 21:
-            print('DEALER WINS!')
+    player, dealer = hand_value(player_hand), hand_value(dealer_hand)
+    print('Player {}, total: {}'.format(player_hand, player))
+    print('Dealer {}, total: {}'.format(dealer_hand, dealer))
+    if player > 21:
+        print('BUST! YOU LOSE!')
+        print('DEALER WINS!')
+    elif player == 21 and dealer != 21:
+        print('BLACKJACK!!!')
+    elif dealer > 21:
+        print('DEALER BUST! YOU WIN!')
+    elif player == dealer:
+        print('push')
+    elif player > dealer:
+        print('YOU WIN!!!')
+    else:
+        print('DEALER WINS!')
 
 
 def betting(betting_money):
@@ -160,29 +164,34 @@ def betting(betting_money):
             print('INVALID CHOICE!!')
 
 
-def blackjack():
-    betting_money = round(randint(100, 1500), -2)
-    while True:
+def blackjack(betting_money):
+    print('You have this much to gamble with:', betting_money)
+    betting(betting_money)
+    shoe = make_shoe()
+    player_hand = [shoe.pop(), shoe.pop()]
+    print('Player\'s Hand:', player_hand)
+    hand_value(player_hand)
+    dealer_hand = [shoe.pop(), shoe.pop()]
+    print('Dealer\'s Hand:', dealer_hand[0], '?')
+    players_turn(player_hand, shoe)
+    dealers_turn(dealer_hand, shoe)
+    winning_conditions(player_hand, dealer_hand)
 
+
+def game_play():
+    betting_money = 100
+    b = True
+    while True:
         response = ask_to_play_blackjack()
-        if response == 'No':
-            break
         if response == 'Yes':
-            print('You have this much to gamble with:', betting_money)
-            betting(betting_money)
-            shoe = make_shoe()
-            player_hand = shoe[:2]
-            print('Player\'s Hand:', player_hand)
-            hand_value(player_hand)
-            dealer_hand = shoe[2:4]
-            print('Dealer\'s Hand:', dealer_hand[0], '?')
-            players_turn(player_hand, shoe)
-            dealers_turn(dealer_hand, shoe)
-            winning_conditions(player_hand, dealer_hand)
+            if b:
+                ask_for_instructions()
+                b = False
+            blackjack(betting_money)
 
 
 def main():
-    blackjack()
+    game_play()
 
 
 if __name__ == '__main__':
