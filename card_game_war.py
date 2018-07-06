@@ -91,12 +91,20 @@ def war():
 
         if len(top) == 0:
             shuffle(top_won)
-            top = top_won.copy()
+            top = top_won.copy())
+
+        if count % 1000 == 0:
+            top.extend(top_won[:])
             top_won = []
+            bottom.extend(bottom_won[:])
+            bottom_won = []
+            shuffle(top)
+            shuffle(bottom)
+            top_won.clear()
         if len(bottom) == 0:
             shuffle(bottom_won)
             bottom = bottom_won.copy()
-            bottom_won = []
+            bottom_won.clear()
 
         if count % 1000 == 0:
             top.extend(top_won[:])
