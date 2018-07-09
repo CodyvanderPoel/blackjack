@@ -1,5 +1,21 @@
 from random import shuffle, randint
 
+print(
+    '____   _        ____     ____   __  __  ______      ____      ____  __  __'
+)
+print(
+    '|  |  | |      / /\\\\     /___|  | | | | |_   _|    / /\\\\    /___| | | | |'
+)
+print(
+    '|__/  | |     / /_\\ \\   | |     | |/ /    | |     / /_\\ \\  ||     | |/ /'
+)
+print(
+    "|  \\  | |__  /_______\\  | |___  |   /   __| |    /_______\\ ||___  |   /"
+)
+print(
+    '|__|  |___| /_/     \_\  \\___|  |_|\_\  \___/   /_/     \_\ \___| |_|\_\ '
+)
+
 
 def print_instructions():
     print('''
@@ -96,7 +112,6 @@ def hand_value(hand):
 
 
 def players_turn(player_hand, shoe):
-
     while True:
         print('Player\'s Turn')
         draw = input('Wanna take a hit?').capitalize()
@@ -111,9 +126,7 @@ def players_turn(player_hand, shoe):
                 print('BLACKJACK!!!')
                 break
             continue
-
             print('Player\'s Hand:', player_hand)
-
         elif draw == 'Stay':
             break
         else:
@@ -126,7 +139,7 @@ def dealers_turn(dealer_hand, shoe):
         print('Dealer\'s Turn')
         if hand_value(dealer_hand) < 17:
             dealer_hand.append(shoe.pop())
-            print('Dealer\'s hand:', dealer_hand[0], '?', dealer_hand[1:],
+            print('Dealer\'s hand:', dealer_hand[0], '?', dealer_hand[2:],
                   hand_value(dealer_hand))
 
         else:
@@ -140,33 +153,48 @@ def winning_conditions(player_hand, dealer_hand):
     if player > 21:
         print('BUST! YOU LOSE!')
         print('DEALER WINS!')
+        return 'lose'
     elif player == 21 and dealer != 21:
         print('BLACKJACK!!!')
+        return 'blackjack'
     elif dealer > 21:
         print('DEALER BUST! YOU WIN!')
+        return 'win'
     elif player == dealer:
         print('push')
+        return 'push'
     elif player > dealer:
         print('YOU WIN!!!')
+        return 'win'
     else:
         print('DEALER WINS!')
+        return 'lose'
 
 
-def betting(betting_money):
-    while True:
-        bet = input('How much are you willing to risk?')
-        if bet.isdigit():
-            if betting_money - int(bet) >= 0:
-                return int(bet)
-            else:
-                print('Not Enough Chips!')
+def betting(betting_money, winning_conditions):
+    """
+    Preconditions: bet must be greater than 0!
+    """
+    bet = input('How much are you willing to risk?')
+    if bet.isdigit():
+        if betting_money - int(bet) > 0:
+            if winning_conditions == 'win':
+                return (betting_money - int(bet)) + int(bet) * 2
+            if winning_conditions == 'lose':
+                return betting_money - int(bet)
+            if winning_conditions == 'push':
+                return betting_money
+            if winning_conditions == 'blackjack':
+                return (betting_money - int(bet)) + int(bet) * 2.5
         else:
-            print('INVALID CHOICE!!')
+            print('Not Enough Chips!')
+    else:
+        print('INVALID CHOICE!!')
 
 
 def blackjack(betting_money):
     print('You have this much to gamble with:', betting_money)
-    betting(betting_money)
+    betting_money = betting(betting_money, winning_conditions)
     shoe = make_shoe()
     player_hand = [shoe.pop(), shoe.pop()]
     print('Player\'s Hand:', player_hand)
@@ -176,6 +204,8 @@ def blackjack(betting_money):
     players_turn(player_hand, shoe)
     dealers_turn(dealer_hand, shoe)
     winning_conditions(player_hand, dealer_hand)
+
+    return betting_money
 
 
 def game_play():
@@ -187,7 +217,7 @@ def game_play():
             if b:
                 ask_for_instructions()
                 b = False
-            blackjack(betting_money)
+        betting_money = blackjack(betting_money)
 
 
 def main():
